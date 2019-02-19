@@ -11,11 +11,9 @@ Neural message passing algorithms for semi-supervised classification on graphs h
 This repository provides a PyTorch implementation of PPNP and APPNP as described in the paper:
 
 > SimGNN: A Neural Network Approach to Fast Graph Similarity Computation.
-> Yunsheng Bai, Hao Ding, Song Bian, Ting Chen, Yizhou Sun, Wei Wang.
+> Johannes Klicpera, Aleksandar Bojchevski, Stephan Günnemann.
 > ICLR, 2019.
 > [[Paper]](https://arxiv.org/abs/1810.05997)
-
-A reference Tensorflow implementation is accessible [[here]](https://github.com/yunshengb/SimGNN).
 
 ### Requirements
 The codebase is implemented in Python 3.5.2. package versions used for development are just below.
