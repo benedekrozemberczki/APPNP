@@ -10,7 +10,7 @@ Neural message passing algorithms for semi-supervised classification on graphs h
 
 This repository provides a PyTorch implementation of PPNP and APPNP as described in the paper:
 
-> SimGNN: A Neural Network Approach to Fast Graph Similarity Computation.
+> Combining Neural Networks with Personalized PageRank for Classification on Graphs.
 > Johannes Klicpera, Aleksandar Bojchevski, Stephan Günnemann.
 > ICLR, 2019.
 > [[Paper]](https://arxiv.org/abs/1810.05997)
