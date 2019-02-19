@@ -13,7 +13,7 @@ This repository provides a PyTorch implementation of PPNP and APPNP as described
 > SimGNN: A Neural Network Approach to Fast Graph Similarity Computation.
 > Yunsheng Bai, Hao Ding, Song Bian, Ting Chen, Yizhou Sun, Wei Wang.
 > ICLR, 2019.
-> [[Paper]](http://web.cs.ucla.edu/~yzsun/papers/2019_WSDM_SimGNN.pdf)
+> [[Paper]](https://arxiv.org/abs/1810.05997)
 
 A reference Tensorflow implementation is accessible [[here]](https://github.com/yunshengb/SimGNN).
 
