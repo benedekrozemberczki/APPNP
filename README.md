@@ -32,18 +32,29 @@ torchvision       0.2.1
 scikit-learn      0.20.0
 ```
 ### Datasets
-The code takes pairs of graphs for training from an input folder where each pair of graph is stored as a JSON. Pairs of graphs used for testing are also stored as JSON files. Every node id and node label has to be indexed from 0. Keys of dictionaries are stored strings in order to make JSON serialization possible.
 
-Every JSON file has the following key-value structure:
+The code takes the **edge list** of the graph in a csv file. Every row indicates an edge between two nodes separated by a comma. The first row is a header. Nodes should be indexed starting with 0. A sample graph for `Cora` is included in the  `input/` directory. In addition to the edgelist there is a JSON file with the sparse features and a csv with the target variable.
+
+The **feature matrix** is a sparse binary one it is stored as a json. Nodes are keys of the json and feature indices are the values. For each node feature column ids are stored as elements of a list. The feature matrix is structured as:
 
 ```javascript
-{"graph_1": [[0, 1],[1, 2],[2, 3],[3, 4]],
- "graph_2": [[0, 1], [1, 2], [1, 3], [3, 4], [2, 4]],
- "labels_1": [2, 2, 2, 2],
- "labels_2": [2, 3, 2, 3],
- "ged": 1}
+{ 0: [0, 1, 38, 1968, 2000, 52727],
+  1: [10000, 20, 3],
+  2: [],
+  ...
+  n: [2018, 10000]}
 ```
-The **graph_1** and **graph_2** keys have edge list values which descibe the connectivity structure. Similarly, the **labels_1**  and **labels_2** keys have labels for each node which are stored as list - positions in the list correspond to node identifiers. The **ged** key has an integer value which is the raw graph edit distance for the pair of graphs.
+
+The **target vector** is a csv with two columns and headers, the first contains the node identifiers the second the targets. This csv is sorted by node identifiers and the target column contains the class meberships indexed from zero. 
+
+| **NODE ID**| **Target** |
+| --- | --- |
+| 0 | 3 |
+| 1 | 1 |
+| 2 | 0 |
+| 3 | 1 |
+| ... | ... |
+| n | 3 |
 
 ### Options
 Training a SimGNN model is handled by the `src/main.py` script which provides the following command line arguments.
