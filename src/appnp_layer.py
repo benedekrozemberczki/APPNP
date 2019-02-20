@@ -50,12 +50,12 @@ class PPNPLayer(AbstractPPNPLayer):
     def forward(self, personalized_page_rank_matrix, features, dropout_rate, transform, density):
         """
         Doing a forward pass.
-        :param :
-        :param :
-        :param :
-        :param :
-        :param :
-        :return :
+        :param personalized_page_rank_matrix: Dense personalized pagerank matrix.
+        :param features: Feature matrix.
+        :param dropout_rate: Dropout value.
+        :param transform: Activation function application rule.
+        :param density: Densoty structure of the feature matrix.
+        :return localized_features: Convolved features.
         """
         if density:
             filtered_features = torch.mm(features, self.weight_matrix)
@@ -75,12 +75,12 @@ class APPNPLayer(AbstractPPNPLayer):
     def forward(self, normalized_adjacency_matrix, features, dropout_rate, transform, density):
         """
         Doing a forward pass.
-        :param :
-        :param :
-        :param :
-        :param :
-        :param :
-        :return :
+        :param normalized_adjacency_matrix: Normalized adjacency matrix.
+        :param features: Feature matrix.
+        :param dropout_rate: Dropout value.
+        :param transform: Activation function application rule.
+        :param density: Densoty structure of the feature matrix.
+        :return localized_features: Convolved features.
         """
         if density:
             base_features = torch.mm(features, self.weight_matrix)
