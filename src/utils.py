@@ -87,6 +87,10 @@ def normalize_adjacency_matrix(A, I):
 def create_propagator_matrix(graph, alpha, model):
     """
     Creating  apropagation matrix.
+    :param graph:
+    :param alpha:
+    :param model:
+    :return propagator:
     """
     A = create_adjacency_matrix(graph)
     I = sparse.eye(A.shape[0])
