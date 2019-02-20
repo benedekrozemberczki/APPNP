@@ -2,6 +2,7 @@ from parser import parameter_parser
 from utils import tab_printer, graph_reader, feature_reader, target_reader
 from appnp import APPNPTrainer
 import torch
+
 def main():
     """
     Parsing command line parameters, reading data, fitting an APPNP/PPNP and scoring the model.
