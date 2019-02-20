@@ -54,9 +54,6 @@ class APPNPLayer(AbstractPPNPLayer):
     Approximate personalized PageRank Convolution Layer.
     """
     def forward(self, normalized_adjacency_matrix, features, dropout_rate, transform, density):
-        """
-        Need to add sparse decomposition to index list and values.
-        """
         if density:
             base_features = torch.mm(features, self.weight_matrix)
         else:
@@ -65,9 +62,6 @@ class APPNPLayer(AbstractPPNPLayer):
         if transform:
             base_features = torch.nn.functional.relu(base_features) + self.bias
         localized_features = base_features
-        """
-        Need to adapt sparse behaviour.
-        """
         for iteration in range(self.iterations):
             localized_features = (1-self.alpha)*spmm(normalized_adjacency_matrix["indices"], normalized_adjacency_matrix["values"], localized_features.shape[0], localized_features)+self.alpha*base_features
 
