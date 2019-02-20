@@ -30,6 +30,9 @@ class AbstractPPNPLayer(torch.nn.Module):
         self.init_parameters()
 
     def define_parameters(self):
+        """
+        Defining the weight matrices.
+        """
         self.weight_matrix = torch.nn.Parameter(torch.Tensor(self.in_channels, self.out_channels))
         self.bias = torch.nn.Parameter(torch.Tensor(self.out_channels))
 
