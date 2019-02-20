@@ -87,10 +87,10 @@ def normalize_adjacency_matrix(A, I):
 def create_propagator_matrix(graph, alpha, model):
     """
     Creating  apropagation matrix.
-    :param graph:
-    :param alpha:
-    :param model:
-    :return propagator:
+    :param graph: NetworkX graph.
+    :param alpha: Teleport parameter.
+    :param model: Type of model exact or approximate.
+    :return propagator: Propagator matrix - Dense torch matrix or dict with indices and values for sparse multiplication.
     """
     A = create_adjacency_matrix(graph)
     I = sparse.eye(A.shape[0])
