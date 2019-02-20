@@ -18,26 +18,27 @@ def tab_printer(args):
     print(t.draw())
 
 def graph_reader(path):
+    """
+    Function to read the graph from the path.
+    :param path: Path to the edge list.
+    :return graph: NetworkX object returned.
+    """
     graph = nx.from_edgelist(pd.read_csv(path).values.tolist())
-
     graph.remove_edges_from(graph.selfloop_edges())
-  
     return graph
 
 def feature_reader(path):
     """
     Reading the feature matrix stored as JSON from the disk.
-    :param feature_path: Path to the JSON file.
-    :return features: Feature sparse CSR matrix.
+    :param path: Path to the JSON file.
+    :return out_features: Dict with index and value tensor.
     """
-
     features = json.load(open(path))
     index_1 = [int(k) for k,v in features.items() for fet in v]
     index_2 = [int(fet) for k,v in features.items() for fet in v]
     values = [1.0]*len(index_1) 
     nodes = [int(k) for k,v in features.items()]
     node_count = max(nodes)+1
-
     feature_count = max(index_2)+1
     features = sparse.coo_matrix((values,(index_1,index_2)), shape=(node_count, feature_count),dtype=np.float32)
     out_features = dict()
@@ -48,6 +49,11 @@ def feature_reader(path):
 
 
 def target_reader(path):
+    """
+    Reading the target vector from disk.
+    :param path: Path to the target.
+    :return target: Target vector.
+    """
     target = np.array(pd.read_csv(path)["target"])
     return target
 
