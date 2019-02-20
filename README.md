@@ -65,9 +65,9 @@ Training an APPNP/PPNP model is handled by the `src/main.py` script which provid
 ```
 #### Model options
 ```
-  --seed              INT     Random seed.
-  --model             STR     Model exact or approximate.
-  --iterations        INT     APP iterations
+  --seed              INT     Random seed.                 Defailt is 42.
+  --model             STR     Model exact or approximate.  Default is `exact`.
+  --iterations        INT     APP iterations.
   --alpha             FLOAT   Teleport parameter.
   --epochs            INT     Number of epochs.
   --early-stopping    INT     Early stopping rounds.
