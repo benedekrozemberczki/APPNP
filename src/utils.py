@@ -58,6 +58,11 @@ def target_reader(path):
     return target
 
 def create_adjacency_matrix(graph):
+    """
+    Creating a sparse adjacency matrix.
+    :param graph: NetworkX object.
+    :return A: Adjacency matrix.
+    """
     index_1 = [edge[0] for edge in graph.edges()]
     index_2 = [edge[1] for edge in graph.edges()]
     values = [1 for edge in graph.edges()]
@@ -66,6 +71,11 @@ def create_adjacency_matrix(graph):
     return A
 
 def normalize_adjacency_matrix(A, I):
+    """
+    Creating a normalized adjacency matrix with self loops.
+    :param A: Sparse adjacency matrix.
+    :param I: Identity matrix.
+    """
     A_tilde = A + I
     degrees = A_tilde.sum(axis=0)[0].tolist()
     D = sparse.diags(degrees, [0])
