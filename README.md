@@ -55,7 +55,7 @@ The **target vector** is a csv with two columns and headers, the first contains 
 | n | 3 |
 
 ### Options
-Training a SimGNN model is handled by the `src/main.py` script which provides the following command line arguments.
+Training an APPNP/PPNP model is handled by the `src/main.py` script which provides the following command line arguments.
 
 #### Input and output options
 ```
