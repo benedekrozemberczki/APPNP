@@ -48,6 +48,15 @@ class PPNPLayer(AbstractPPNPLayer):
     Exact personalized PageRank convolution layer.
     """
     def forward(self, personalized_page_rank_matrix, features, dropout_rate, transform, density):
+        """
+        Doing a forward pass.
+        :param :
+        :param :
+        :param :
+        :param :
+        :param :
+        :return :
+        """
         if density:
             filtered_features = torch.mm(features, self.weight_matrix)
         else:
@@ -64,6 +73,15 @@ class APPNPLayer(AbstractPPNPLayer):
     Approximate personalized PageRank Convolution Layer.
     """
     def forward(self, normalized_adjacency_matrix, features, dropout_rate, transform, density):
+        """
+        Doing a forward pass.
+        :param :
+        :param :
+        :param :
+        :param :
+        :param :
+        :return :
+        """
         if density:
             base_features = torch.mm(features, self.weight_matrix)
         else:
