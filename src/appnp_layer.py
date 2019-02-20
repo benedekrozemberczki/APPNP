@@ -15,6 +15,10 @@ def uniform(size, tensor):
 class AbstractPPNPLayer(torch.nn.Module):
     """
     Abstract class for PageRank and Approximate PageRank networks.
+    :param :
+    :param :
+    :param :
+    :param :
     """
     def __init__(self, in_channels, out_channels, iterations, alpha):
         super(AbstractPPNPLayer, self).__init__()
