@@ -75,6 +75,7 @@ def normalize_adjacency_matrix(A, I):
     Creating a normalized adjacency matrix with self loops.
     :param A: Sparse adjacency matrix.
     :param I: Identity matrix.
+    :return A_tile_hat: Normalized adjacency matrix.
     """
     A_tilde = A + I
     degrees = A_tilde.sum(axis=0)[0].tolist()
@@ -84,6 +85,9 @@ def normalize_adjacency_matrix(A, I):
     return A_tilde_hat
 
 def create_propagator_matrix(graph, alpha, model):
+    """
+    Creating  apropagation matrix.
+    """
     A = create_adjacency_matrix(graph)
     I = sparse.eye(A.shape[0])
     A_tilde_hat = normalize_adjacency_matrix(A, I)
