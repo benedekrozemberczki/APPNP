@@ -65,9 +65,9 @@ Training an APPNP/PPNP model is handled by the `src/main.py` script which provid
 ```
 #### Model options
 ```
-  --seed              INT     Random seed for split and inits.
+  --seed              INT     Random seed.
   --model             STR     Model exact or approximate.
-  --iterations        INT     Approximate personalized pagerank iterations
+  --iterations        INT     APP iterations
   --alpha             FLOAT   Teleport parameter.
   --epochs            INT     Number of epochs.
   --early-stopping    INT     Early stopping rounds.
@@ -75,7 +75,7 @@ Training an APPNP/PPNP model is handled by the `src/main.py` script which provid
   --validation-size   INT     Validation set size. 
   --learning-rate     FLOAT   Adam learning rate.
   --dropout           FLOAT   Dropout rate value.
-  --lambd             FLOAT   Weight regularization parameter on layer 1.
+  --lambd             FLOAT   Rgularization parameter.
   --layers            LST     Layer sizes in first 2 layers.
 ```
 ### Examples
