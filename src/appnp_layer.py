@@ -37,9 +37,12 @@ class PPNPLayer(AbstractPPNPLayer):
     """
     Exact personalized PageRank convolution layer.
     """
-    def forward(self, personalized_page_rank_matrix, features, dropout_rate, transform):
-
-        filtered_features = torch.nn.functional.dropout(torch.mm(features, self.weight_matrix), p = dropout_rate, training = self.training)
+    def forward(self, personalized_page_rank_matrix, features, dropout_rate, transform, density):
+        if density:
+            filtered_features = torch.mm(features, self.weight_matrix)
+        else:
+            filtered_features = spmm(features["indices"], features["values"], features["dimensions"][0],  self.weight_matrix)
+        filtered_features = torch.nn.functional.dropout(filtered_features , p = dropout_rate, training = self.training)
         if transform:
             filtered_features = torch.nn.functional.relu(filtered_features)
         localized_features = torch.mm(personalized_page_rank_matrix, filtered_features)
@@ -50,12 +53,15 @@ class APPNPLayer(AbstractPPNPLayer):
     """
     Approximate personalized PageRank Convolution Layer.
     """
-    def forward(self, normalized_adjacency_matrix, features, dropout_rate, transform):
+    def forward(self, normalized_adjacency_matrix, features, dropout_rate, transform, density):
         """
         Need to add sparse decomposition to index list and values.
         """
-        base_features = torch.nn.functional.dropout(torch.mm(features, self.weight_matrix), p = dropout_rate, training = self.training)
-        
+        if density:
+            base_features = torch.mm(features, self.weight_matrix)
+        else:
+            base_features = spmm(features["indices"], features["values"], features["dimensions"][0],  self.weight_matrix)
+        base_features = torch.nn.functional.dropout(base_features, p = dropout_rate, training = self.training)
         if transform:
             base_features = torch.nn.functional.relu(base_features) + self.bias
         localized_features = base_features
@@ -63,5 +69,7 @@ class APPNPLayer(AbstractPPNPLayer):
         Need to adapt sparse behaviour.
         """
         for iteration in range(self.iterations):
-            localized_features = (1-self.alpha)*torch.mm(normalized_adjacency_matrix, localized_features)+self.alpha*base_features
+            localized_features = (1-self.alpha)*spmm(normalized_adjacency_matrix["indices"], normalized_adjacency_matrix["values"], localized_features.shape[0], localized_features)+self.alpha*base_features
+
+
         return localized_features

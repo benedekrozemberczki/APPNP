@@ -31,11 +31,12 @@ class PageRankNetwork(torch.nn.Module):
         self.setup_layer_structure()
 
     def forward(self, propagation_matrix, input_features):
+        if self.args.model == "exact":
+            propagation_matrix = torch.nn.functional.dropout(propagation_matrix, p = self.args.dropout, training = self.training)
 
-        propagation_matrix = torch.nn.functional.dropout(propagation_matrix, p = self.args.dropout, training = self.training)
-        abstract_features_1 = self.page_rank_convolution_1(propagation_matrix, input_features, self.args.dropout, True)
-        abstract_features_2 = self.page_rank_convolution_2(propagation_matrix, abstract_features_1, self.args.dropout, True)
-        abstract_features_3 = self.page_rank_convolution_3(propagation_matrix, abstract_features_2, 0, False)
+        abstract_features_1 = self.page_rank_convolution_1(propagation_matrix, input_features, self.args.dropout, True, False)
+        abstract_features_2 = self.page_rank_convolution_2(propagation_matrix, abstract_features_1, self.args.dropout, True, True)
+        abstract_features_3 = self.page_rank_convolution_3(propagation_matrix, abstract_features_2, 0, False, True)
         predictions = torch.nn.functional.log_softmax(abstract_features_3, dim=1)
 
         return predictions
@@ -53,6 +54,7 @@ class APPNPTrainer(object):
         self.train_test_split()
 
     def train_test_split(self):
+        random.seed(self.args.seed)
         nodes = [node for node in range(self.ncount)]
         random.shuffle(nodes)
         self.train_nodes = torch.LongTensor(nodes[0:self.args.training_size])
@@ -61,11 +63,9 @@ class APPNPTrainer(object):
 
     def setup_features(self):
 
-        self.ncount = self.graph.number_of_nodes()
-        self.feature_number = self.features.shape[1]
-
+        self.ncount = self.features["dimensions"][0]
+        self.feature_number = self.features["dimensions"][1]
         self.class_number = max(self.target)+1
-        self.features = torch.FloatTensor(self.features.todense())
         self.target = torch.LongTensor(self.target)
         self.propagation_matrix = create_propagator_matrix(self.graph, self.args.alpha, self.args.model)
 
@@ -86,7 +86,7 @@ class APPNPTrainer(object):
             loss.backward()
             self.optimizer.step()
             new_accuracy = self.score(self.validation_nodes)
-            epochs.set_description("Validation Accuracy=%g" % round(new_accuracy,4))
+            epochs.set_description("Validation Accuracy: %g" % round(new_accuracy,4))
             if new_accuracy < accuracy:
                 no_improvement = no_improvement + 1
                 if no_improvement == self.args.early_stopping:

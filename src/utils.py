@@ -39,8 +39,12 @@ def feature_reader(path):
     node_count = max(nodes)+1
 
     feature_count = max(index_2)+1
-    features = sparse.csr_matrix(sparse.coo_matrix((values,(index_1,index_2)), shape=(node_count, feature_count),dtype=np.float32))
-    return features
+    features = sparse.coo_matrix((values,(index_1,index_2)), shape=(node_count, feature_count),dtype=np.float32)
+    out_features = dict()
+    out_features["indices"] = torch.LongTensor(np.concatenate([features.row.reshape(-1,1), features.col.reshape(-1,1)],axis=1).T)
+    out_features["values"] = torch.FloatTensor(features.data)
+    out_features["dimensions"] = features.shape
+    return out_features
 
 
 def target_reader(path):
@@ -71,7 +75,10 @@ def create_propagator_matrix(graph, alpha, model):
         propagator = (I-(1-alpha)*A_tilde_hat).todense()
         propagator = alpha*torch.inverse(torch.FloatTensor(propagator))
     else:
-        propagator = torch.FloatTensor(A_tilde_hat.todense())
+        propagator = dict()
+        A_tilde_hat = sparse.coo_matrix(A_tilde_hat)
+        propagator["indices"] = torch.LongTensor(np.concatenate([A_tilde_hat.row.reshape(-1,1), A_tilde_hat.col.reshape(-1,1)],axis=1).T)
+        propagator["values"] = torch.FloatTensor(A_tilde_hat.data)
     return propagator
 
 

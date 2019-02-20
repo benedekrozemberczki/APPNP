@@ -23,11 +23,6 @@ def parameter_parser():
                         default = "./input/cora_target.csv",
 	                help = "Target classes csv.")
 
-    parser.add_argument("--log-path",
-                        nargs = "?",
-                        default = "./logs/cora_logs.json",
-	                help = "Log json.")
-
     parser.add_argument("--model",
                         nargs = "?",
                         default = "exact",
@@ -37,6 +32,11 @@ def parameter_parser():
                         type = int,
                         default = 200,
 	                help = "Number of training epochs. Default is 200.")
+
+    parser.add_argument("--seed",
+                        type = int,
+                        default = 42,
+	                help = "Random seed for train-test split. Default is 42.")
 
     parser.add_argument("--early-stopping",
                         type = int,
