@@ -74,6 +74,4 @@ class APPNPLayer(AbstractPPNPLayer):
         localized_features = base_features
         for iteration in range(self.iterations):
             localized_features = (1-self.alpha)*spmm(normalized_adjacency_matrix["indices"], normalized_adjacency_matrix["values"], localized_features.shape[0], localized_features)+self.alpha*base_features
-
-
         return localized_features
