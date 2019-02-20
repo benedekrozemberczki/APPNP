@@ -59,9 +59,9 @@ Training a SimGNN model is handled by the `src/main.py` script which provides th
 
 #### Input and output options
 ```
-  --edge-path       STR    Training graphs folder.      Default is `dataset/train/`.
-  --features-path   STR    Testing graphs folder.       Default is `dataset/test/`.
-  --target-path     STR    Testing graphs folder.       Default is `dataset/test/`.
+  --edge-path       STR    Training graphs folder.      Default is `input/cora_edges.csv`.
+  --features-path   STR    Testing graphs folder.       Default is `input/cora_features.json`.
+  --target-path     STR    Testing graphs folder.       Default is `input/cora_target.csv`.
 ```
 #### Model options
 ```
