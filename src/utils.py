@@ -104,6 +104,3 @@ def create_propagator_matrix(graph, alpha, model):
         propagator["indices"] = torch.LongTensor(np.concatenate([A_tilde_hat.row.reshape(-1,1), A_tilde_hat.col.reshape(-1,1)],axis=1).T)
         propagator["values"] = torch.FloatTensor(A_tilde_hat.data)
     return propagator
-
-
-
