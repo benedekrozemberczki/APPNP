@@ -65,10 +65,17 @@ Training an APPNP/PPNP model is handled by the `src/main.py` script which provid
 ```
 #### Model options
 ```
-  --filters-1             INT         Number of filter in 1st GCN layer.       Default is 128.
-  --dropout               FLOAT       Dropout rate.                            Default is 0.5.
-  --learning-rate         FLOAT       Learning rate.                           Default is 0.001.
-  --histogram             BOOL        Include histogram features.              Default is False.
+  --model
+  --epochs
+  --seed
+  --early-stopping
+  --iterations
+  --training-size
+  --validation-size
+  --dropout
+  --alpha
+  --learning-rate
+  --layers
 ```
 ### Examples
 The following commands learn a neural network and score on the test set. Training a SimGNN model on the default dataset.
