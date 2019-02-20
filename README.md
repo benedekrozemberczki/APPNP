@@ -65,17 +65,18 @@ Training an APPNP/PPNP model is handled by the `src/main.py` script which provid
 ```
 #### Model options
 ```
-  --model
-  --epochs
-  --seed
-  --early-stopping
-  --iterations
-  --training-size
-  --validation-size
-  --dropout
-  --alpha
-  --learning-rate
-  --layers
+  --model             STR
+  --epochs            INT
+  --seed              INT
+  --early-stopping    INT
+  --iterations        INT
+  --training-size     INT
+  --validation-size   INT
+  --dropout           FLOAT
+  --alpha             FLOAT
+  --learning-rate     FLOAT
+  --lambd             FLOAT
+  --layers            LST
 ```
 ### Examples
 The following commands learn a neural network and score on the test set. Training a SimGNN model on the default dataset.
