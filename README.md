@@ -85,7 +85,7 @@ The following commands learn a neural network and score on the test set. Trainin
 python src/main.py
 ```
 <p align="center">
-<img style="float: center;" src="simgnn_run.jpg">
+<img style="float: center;" src="appnp_run.jpg">
 </p>
 
 Training a SimGNN model for a 100 epochs with a batch size of 512.
