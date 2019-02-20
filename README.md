@@ -59,8 +59,9 @@ Training a SimGNN model is handled by the `src/main.py` script which provides th
 
 #### Input and output options
 ```
-  --training-graphs   STR    Training graphs folder.      Default is `dataset/train/`.
-  --testing-graphs    STR    Testing graphs folder.       Default is `dataset/test/`.
+  --edge-path   STR    Training graphs folder.      Default is `dataset/train/`.
+  --features-path    STR    Testing graphs folder.       Default is `dataset/test/`.
+  --target-path    STR    Testing graphs folder.       Default is `dataset/test/`.
 ```
 #### Model options
 ```
