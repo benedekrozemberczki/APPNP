@@ -37,6 +37,9 @@ class AbstractPPNPLayer(torch.nn.Module):
         self.bias = torch.nn.Parameter(torch.Tensor(self.out_channels))
 
     def init_parameters(self):
+        """
+        Initializing weights.
+        """
         torch.nn.init.xavier_uniform_(self.weight_matrix)
         uniform(self.out_channels,self.bias)
 
