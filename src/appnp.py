@@ -56,10 +56,9 @@ class APPNPTrainer(object):
     Class for training the neural network.
     :param args: Arguments object.
     :param graph: NetworkX graph.
-    :param features:  Feature sparse matrix.
+    :param features: Feature sparse matrix.
     :param target: Target vector.
     """
-
     def __init__(self, args, graph, features, target):
         self.args = args
         self.graph = graph
@@ -70,6 +69,9 @@ class APPNPTrainer(object):
         self.train_test_split()
 
     def train_test_split(self):
+        """
+        Creating a train/test split.
+        """
         random.seed(self.args.seed)
         nodes = [node for node in range(self.ncount)]
         random.shuffle(nodes)
