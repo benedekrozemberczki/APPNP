@@ -20,11 +20,17 @@ class PageRankNetwork(torch.nn.Module):
         self.setup_layers()
 
     def setup_layer_structure(self):
+        """
+        Creating the layer structure (3 convolutional layers).
+        """
         self.page_rank_convolution_1 = self.layer(self.feature_number, self.args.layers[0], self.args.iterations, self.args.alpha)
         self.page_rank_convolution_2 = self.layer(self.args.layers[0], self.args.layers[1], self.args.iterations, self.args.alpha)
         self.page_rank_convolution_3 = self.layer(self.args.layers[1], self.class_number, self.args.iterations, self.args.alpha)
 
     def setup_layers(self):
+        """
+        Deciding the type of layer used.
+        """
         if self.args.model == "exact":
             self.layer = PPNPLayer
         else:
@@ -32,6 +38,9 @@ class PageRankNetwork(torch.nn.Module):
         self.setup_layer_structure()
 
     def forward(self, propagation_matrix, input_features):
+        """
+        Making a forward pass for proagation.
+        """
         if self.args.model == "exact":
             propagation_matrix = torch.nn.functional.dropout(propagation_matrix, p = self.args.dropout, training = self.training)
 
