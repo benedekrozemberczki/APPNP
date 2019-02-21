@@ -52,7 +52,13 @@ class PageRankNetwork(torch.nn.Module):
         return predictions
 
 class APPNPTrainer(object):
-
+    """
+    Class for training the neural network.
+    :param args: Arguments object.
+    :param graph: NetworkX graph.
+    :param features:  Feature sparse matrix.
+    :param target: Target vector.
+    """
 
     def __init__(self, args, graph, features, target):
         self.args = args
