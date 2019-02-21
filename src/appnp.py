@@ -49,7 +49,6 @@ class PageRankNetwork(torch.nn.Module):
         abstract_features_2 = self.page_rank_convolution_2(propagation_matrix, abstract_features_1, self.args.dropout, True, True)
         abstract_features_3 = self.page_rank_convolution_3(propagation_matrix, abstract_features_2, 0, False, True)
         predictions = torch.nn.functional.log_softmax(abstract_features_3, dim=1)
-
         return predictions
 
 class APPNPTrainer(object):
