@@ -96,6 +96,9 @@ class APPNPTrainer(object):
         self.model = PageRankNetwork(self.args, self.feature_number, self.class_number)
 
     def fit(self):
+        """
+        Fitting a neural network with early stopping.
+        """
         accuracy = 0
         no_improvement = 0
         epochs = trange(self.args.epochs, desc="Accuracy")
