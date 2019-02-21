@@ -125,6 +125,11 @@ class APPNPTrainer(object):
         print("\nTest accuracy: " + str(round(acc,4)) )
 
     def score(self, indices):
+        """
+        Scoring a neural network.
+        :param indices: Indices of nodes involved in accuracy calculation.
+        :return acc: Accuracy score.
+        """
         self.model.eval()
         _, prediction = self.model(self.propagation_matrix, self.features).max(dim=1)
         correct = prediction[indices].eq(self.target[indices]).sum().item()
