@@ -45,7 +45,6 @@ class PageRankNetwork(torch.nn.Module):
         """
         if self.args.model == "exact":
             propagation_matrix = torch.nn.functional.dropout(propagation_matrix, p = self.args.dropout, training = self.training)
-
         abstract_features_1 = self.page_rank_convolution_1(propagation_matrix, input_features, self.args.dropout, True, False)
         abstract_features_2 = self.page_rank_convolution_2(propagation_matrix, abstract_features_1, self.args.dropout, True, True)
         abstract_features_3 = self.page_rank_convolution_3(propagation_matrix, abstract_features_2, 0, False, True)
