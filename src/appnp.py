@@ -8,8 +8,9 @@ from sklearn.model_selection import train_test_split
 class PageRankNetwork(torch.nn.Module):
     """
     Page rank neural network class.
-    :param in_channels: Number of features.
-    :param out_channels: Number of filters.
+    :param args: Arguments object.
+    :param feature_number: Number of features.
+    :param class_number: Number of target classes.
     """
     def __init__(self, args, feature_number, class_number):
         super(PageRankNetwork, self).__init__()
