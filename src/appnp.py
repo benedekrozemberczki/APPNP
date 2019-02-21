@@ -40,7 +40,7 @@ class PageRankNetwork(torch.nn.Module):
     def forward(self, propagation_matrix, input_features):
         """
         Making a forward pass for propagation.
-        :param propagation_matrix:
+        :param propagation_matrix: Propagation matrix (normalized adjacency or personalized pagerank).
         :param input_features:
         """
         if self.args.model == "exact":
