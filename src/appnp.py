@@ -3,7 +3,6 @@ import random
 from tqdm import trange
 from utils import create_propagator_matrix
 from appnp_layer import PPNPLayer, APPNPLayer
-from sklearn.model_selection import train_test_split
 
 class PageRankNetwork(torch.nn.Module):
     """
