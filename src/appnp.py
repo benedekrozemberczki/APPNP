@@ -41,7 +41,8 @@ class PageRankNetwork(torch.nn.Module):
         """
         Making a forward pass for propagation.
         :param propagation_matrix: Propagation matrix (normalized adjacency or personalized pagerank).
-        :param input_features:
+        :param input_features: Input node features.
+        :return predictions: Prediction vector.
         """
         if self.args.model == "exact":
             propagation_matrix = torch.nn.functional.dropout(propagation_matrix, p = self.args.dropout, training = self.training)
