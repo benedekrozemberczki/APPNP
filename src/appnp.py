@@ -80,7 +80,9 @@ class APPNPTrainer(object):
         self.test_nodes = torch.LongTensor(nodes[self.args.training_size+self.args.validation_size:])
 
     def setup_features(self):
-
+        """
+        Creating a feature matrix, target vector and propagation matrix.
+        """"
         self.ncount = self.features["dimensions"][0]
         self.feature_number = self.features["dimensions"][1]
         self.class_number = max(self.target)+1
