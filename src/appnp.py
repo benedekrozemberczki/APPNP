@@ -90,6 +90,9 @@ class APPNPTrainer(object):
         self.propagation_matrix = create_propagator_matrix(self.graph, self.args.alpha, self.args.model)
 
     def setup_model(self):
+        """
+        Defining a PageRankNetwork.
+        """
         self.model = PageRankNetwork(self.args, self.feature_number, self.class_number)
 
     def fit(self):
