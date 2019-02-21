@@ -39,7 +39,9 @@ class PageRankNetwork(torch.nn.Module):
 
     def forward(self, propagation_matrix, input_features):
         """
-        Making a forward pass for proagation.
+        Making a forward pass for propagation.
+        :param propagation_matrix:
+        :param input_features:
         """
         if self.args.model == "exact":
             propagation_matrix = torch.nn.functional.dropout(propagation_matrix, p = self.args.dropout, training = self.training)
