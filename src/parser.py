@@ -83,6 +83,6 @@ def parameter_parser():
                         type=int,
                         help = "Layer dimensions separated by space. E.g. 64 64.")
 
-    parser.set_defaults(layers = [64, 64])
+    parser.set_defaults(layers = [64, 64, 64])
     
     return parser.parse_args()
