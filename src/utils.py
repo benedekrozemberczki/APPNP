@@ -34,18 +34,8 @@ def feature_reader(path):
     :return out_features: Dict with index and value tensor.
     """
     features = json.load(open(path))
-    index_1 = [int(k) for k,v in features.items() for fet in v]
-    index_2 = [int(fet) for k,v in features.items() for fet in v]
-    values = [1.0]*len(index_1) 
-    nodes = [int(k) for k,v in features.items()]
-    node_count = max(nodes)+1
-    feature_count = max(index_2)+1
-    features = sparse.coo_matrix((values,(index_1,index_2)), shape=(node_count, feature_count),dtype=np.float32)
-    out_features = dict()
-    out_features["indices"] = torch.LongTensor(np.concatenate([features.row.reshape(-1,1), features.col.reshape(-1,1)],axis=1).T)
-    out_features["values"] = torch.FloatTensor(features.data)
-    out_features["dimensions"] = features.shape
-    return out_features
+    features = {int(k):[int(val) for val in v] for k, v in features.items()}
+    return features
 
 
 def target_reader(path):

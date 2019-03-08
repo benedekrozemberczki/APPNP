@@ -1,137 +1,112 @@
 import torch
 import random
-from tqdm import trange
+from tqdm import trange, tqdm
 from utils import create_propagator_matrix
-from appnp_layer import PPNPLayer, APPNPLayer
+from appnp_layer import APPNPModel
+import numpy as np
+from torch_sparse import spmm
+from texttable import Texttable
 
-class PageRankNetwork(torch.nn.Module):
-    """
-    Page rank neural network class.
-    :param args: Arguments object.
-    :param feature_number: Number of features.
-    :param class_number: Number of target classes.
-    """
-    def __init__(self, args, feature_number, class_number):
-        super(PageRankNetwork, self).__init__()
-        self.args = args
-        self.feature_number = feature_number
-        self.class_number = class_number
-        self.setup_layers()
-
-    def setup_layer_structure(self):
-        """
-        Creating the layer structure (3 convolutional layers).
-        """
-        self.page_rank_convolution_1 = self.layer(self.feature_number, self.args.layers[0], self.args.iterations, self.args.alpha)
-        self.page_rank_convolution_2 = self.layer(self.args.layers[0], self.args.layers[1], self.args.iterations, self.args.alpha)
-        self.page_rank_convolution_3 = self.layer(self.args.layers[1], self.class_number, self.args.iterations, self.args.alpha)
-
-    def setup_layers(self):
-        """
-        Deciding the type of layer used.
-        """
-        if self.args.model == "exact":
-            self.layer = PPNPLayer
-        else:
-            self.layer = APPNPLayer
-        self.setup_layer_structure()
-
-    def forward(self, propagation_matrix, input_features):
-        """
-        Making a forward pass for propagation.
-        :param propagation_matrix: Propagation matrix (normalized adjacency or personalized pagerank).
-        :param input_features: Input node features.
-        :return predictions: Prediction vector.
-        """
-        if self.args.model == "exact":
-            propagation_matrix = torch.nn.functional.dropout(propagation_matrix, p = self.args.dropout, training = self.training)
-        abstract_features_1 = self.page_rank_convolution_1(propagation_matrix, input_features, self.args.dropout, True, False)
-        abstract_features_2 = self.page_rank_convolution_2(propagation_matrix, abstract_features_1, self.args.dropout, True, True)
-        abstract_features_3 = self.page_rank_convolution_3(propagation_matrix, abstract_features_2, 0, False, True)
-        predictions = torch.nn.functional.log_softmax(abstract_features_3, dim=1)
-        return predictions
 
 class APPNPTrainer(object):
-    """
-    Class for training the neural network.
-    :param args: Arguments object.
-    :param graph: NetworkX graph.
-    :param features: Feature sparse matrix.
-    :param target: Target vector.
-    """
+
+
     def __init__(self, args, graph, features, target):
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.args = args
         self.graph = graph
         self.features = features
         self.target = target
-        self.setup_features()
-        self.setup_model()
+        self.create_model()
         self.train_test_split()
+
+    def create_model(self):
+        self.node_count = self.graph.number_of_nodes()
+        self.number_of_labels = np.max(self.target)+1
+        self.number_of_features = max([feature for node, features  in self.features.items() for feature in features]) + 1
+        self.model = APPNPModel(self.args, self.number_of_labels, self.number_of_features)
+        self.model.to(self.device)
 
     def train_test_split(self):
         """
         Creating a train/test split.
         """
         random.seed(self.args.seed)
-        nodes = [node for node in range(self.ncount)]
+        nodes = [node for node in range(self.node_count)]
         random.shuffle(nodes)
-        self.train_nodes = torch.LongTensor(nodes[0:self.args.training_size])
-        self.validation_nodes = torch.LongTensor(nodes[self.args.training_size:self.args.training_size+self.args.validation_size])
-        self.test_nodes = torch.LongTensor(nodes[self.args.training_size+self.args.validation_size:])
+        self.train_nodes = nodes[0:self.args.training_size]
+        self.test_nodes = nodes[self.args.training_size:]
 
-    def setup_features(self):
-        """
-        Creating a feature matrix, target vector and propagation matrix.
-        """"
-        self.ncount = self.features["dimensions"][0]
-        self.feature_number = self.features["dimensions"][1]
-        self.class_number = max(self.target)+1
-        self.target = torch.LongTensor(self.target)
-        self.propagation_matrix = create_propagator_matrix(self.graph, self.args.alpha, self.args.model)
 
-    def setup_model(self):
-        """
-        Defining a PageRankNetwork.
-        """
-        self.model = PageRankNetwork(self.args, self.feature_number, self.class_number)
+    def create_batches(self):
+        random.shuffle(self.train_nodes)
+        self.batches = [self.train_nodes[i:i+self.args.batch_size] for i in range(0, len(self.train_nodes), self.args.batch_size)]
 
-    def fit(self):
-        """
-        Fitting a neural network with early stopping.
-        """
-        accuracy = 0
-        no_improvement = 0
-        epochs = trange(self.args.epochs, desc="Accuracy")
+    def process_batch(self, batch):
+        features = np.zeros((len(batch), self.number_of_features))
+        
+        index_1 = [i for i, node in enumerate(batch) for feature_index in self.features[node]]
+        index_2 = [feature_index for i, node in enumerate(batch) for feature_index in self.features[node]]
+        value = [1.0 for i, node in enumerate(batch) for feature_index in self.features[node]]
+        features[index_1,index_2] = value
+        features = torch.FloatTensor(features).to(self.device)
+        target = torch.LongTensor(np.array([self.target[node] for  node in batch])).to(self.device)
+        return features, target
+
+
+    def train_neural_network(self):
+        print("\nTraining.\n")
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
         self.model.train()
-        for epoch in epochs:
-            self.optimizer.zero_grad()
-            prediction = self.model(self.propagation_matrix, self.features)
-            loss = torch.nn.functional.nll_loss(prediction[self.train_nodes], self.target[self.train_nodes])
-            loss = loss + self.args.lambd*torch.sum(self.model.page_rank_convolution_1.weight_matrix**2)
-            loss.backward()
-            self.optimizer.step()
-            new_accuracy = self.score(self.validation_nodes)
-            epochs.set_description("Validation Accuracy: %g" % round(new_accuracy,4))
-            if new_accuracy < accuracy:
-                no_improvement = no_improvement + 1
-                if no_improvement == self.args.early_stopping:
-                    epochs.close()
-                    break
-            else:
-                no_improvement = 0
-                accuracy = new_accuracy               
-        acc = self.score(self.test_nodes)
-        print("\nTest accuracy: " + str(round(acc,4)) )
+        for epoch in tqdm(range(self.args.epochs)):
+            self.create_batches()
+            for batch in self.batches:
+                self.optimizer.zero_grad()
+                features, target = self.process_batch(batch)
+                prediction = self.model(features, self.args.dropout)
+                loss = torch.nn.functional.nll_loss(prediction, target)
+                loss = loss + (self.args.lambd/2)*(torch.sum(self.model.layer_1.weight_matrix**2))
+                loss.backward()
+                self.optimizer.step()
 
-    def score(self, indices):
-        """
-        Scoring a neural network.
-        :param indices: Indices of nodes involved in accuracy calculation.
-        :return acc: Accuracy score.
-        """
+    def propagate(self):
+        propagator = create_propagator_matrix(self.graph, self.args.alpha, self.args.model)
+        if self.args.model=="exact":
+            propagator = propagator.to(self.device)
+            self.predictions = torch.mm(propagator, self.predictions)
+        else:
+            localized_predictions = self.predictions
+            indices = propagator["indices"].to(self.device)
+            weights = propagator["values"].to(self.device)
+            for iteration in range(self.args.iterations):
+                localized_predictions = (1-self.args.alpha)*spmm(indices, weights, localized_predictions.shape[0], localized_predictions)+self.args.alpha*self.predictions
+            self.predictions = localized_predictions    
+
+
+    def score(self):
         self.model.eval()
-        _, prediction = self.model(self.propagation_matrix, self.features).max(dim=1)
-        correct = prediction[indices].eq(self.target[indices]).sum().item()
-        acc = correct / indices.shape[0]
-        return acc
+        print("\nScoring.\n")
+        self.predictions = []
+        for node in tqdm(self.graph.nodes()):
+            features, target = self.process_batch([node])
+            prediction = self.model(features, 0)
+            self.predictions.append(prediction)
+        self.predictions = torch.cat(self.predictions)
+
+    def evaluate(self):
+        self.predictions = torch.nn.functional.softmax(self.predictions,dim=1)
+        values, indices = torch.max(self.predictions, 1)
+        predictions = indices.cpu().detach().numpy()
+        hits = predictions==self.target
+ 
+        self.train_accuracy = round(sum(hits[self.train_nodes])/len(self.train_nodes),3)
+        self.test_accuracy = round(sum(hits[self.test_nodes])/len(self.test_nodes),3)
+        tab = Texttable() 
+        tab.add_rows([["Train accuracy:",self.train_accuracy],["Test accuracy:",self.test_accuracy]])
+        print(tab.draw())
+
+    def fit(self):
+        self.train_neural_network()
+        self.score()
+        self.propagate()
+        self.evaluate()

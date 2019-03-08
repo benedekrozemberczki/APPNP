@@ -30,18 +30,13 @@ def parameter_parser():
 
     parser.add_argument("--epochs",
                         type = int,
-                        default = 200,
-	                help = "Number of training epochs. Default is 200.")
+                        default = 1000,
+	                help = "Number of training epochs. Default is 1000.")
 
     parser.add_argument("--seed",
                         type = int,
                         default = 42,
 	                help = "Random seed for train-test split. Default is 42.")
-
-    parser.add_argument("--early-stopping",
-                        type = int,
-                        default = 5,
-	                help = "Number of early stopping rounds. Default is 5.")
 
     parser.add_argument("--iterations",
                         type = int,
@@ -53,10 +48,10 @@ def parameter_parser():
                         default = 1500,
 	                help = "Training set size. Default is 1500.")
 
-    parser.add_argument("--validation-size",
+    parser.add_argument("--batch-size",
                         type = int,
-                        default = 500,
-	                help = "Validation set size. Default is 500.")
+                        default = 128,
+	                help = "Batch size. Default is 128.")
 
     parser.add_argument("--dropout",
                         type = float,
@@ -65,17 +60,17 @@ def parameter_parser():
 
     parser.add_argument("--alpha",
                         type = float,
-                        default = 0.7,
+                        default = 0.1,
 	                help = "Page rank teleport parameter. Default is 0.7.")
 
     parser.add_argument("--learning-rate",
                         type = float,
-                        default = 0.01,
+                        default = 0.001,
 	                help = "Learning rate. Default is 0.01.")
 
     parser.add_argument("--lambd",
                         type = float,
-                        default = 0.005,
+                        default = 0.001,
 	                help = "Weight matrix regularization. Default is 0.005.")
 
     parser.add_argument("--layers",
@@ -83,6 +78,6 @@ def parameter_parser():
                         type=int,
                         help = "Layer dimensions separated by space. E.g. 64 64.")
 
-    parser.set_defaults(layers = [64, 64, 64])
+    parser.set_defaults(layers = [64, 64])
     
     return parser.parse_args()
