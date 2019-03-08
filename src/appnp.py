@@ -88,6 +88,8 @@ class APPNPTrainer(object):
 
 
     def score(self):
+        """
+        """
         self.model.eval()
         print("\nScoring.\n")
         self.predictions = []
@@ -98,11 +100,12 @@ class APPNPTrainer(object):
         self.predictions = torch.cat(self.predictions)
 
     def evaluate(self):
+        """
+        """
         self.predictions = torch.nn.functional.softmax(self.predictions,dim=1)
         values, indices = torch.max(self.predictions, 1)
         predictions = indices.cpu().detach().numpy()
-        hits = predictions==self.target
- 
+        hits = (predictions==self.target)
         self.train_accuracy = round(sum(hits[self.train_nodes])/len(self.train_nodes),3)
         self.test_accuracy = round(sum(hits[self.test_nodes])/len(self.test_nodes),3)
         tab = Texttable() 
