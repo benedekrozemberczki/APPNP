@@ -41,7 +41,6 @@ class APPNPTrainer(object):
         self.train_nodes = nodes[0:self.args.training_size]
         self.test_nodes = nodes[self.args.training_size:]
 
-
     def create_batches(self):
         """
         """
@@ -59,7 +58,6 @@ class APPNPTrainer(object):
         features = torch.FloatTensor(features).to(self.device)
         target = torch.LongTensor(np.array([self.target[node] for  node in batch])).to(self.device)
         return features, target
-
 
     def train_neural_network(self):
         """
@@ -79,6 +77,8 @@ class APPNPTrainer(object):
                 self.optimizer.step()
 
     def propagate(self):
+        """
+        """
         propagator = create_propagator_matrix(self.graph, self.args.alpha, self.args.model)
         if self.args.model=="exact":
             propagator = propagator.to(self.device)
