@@ -7,7 +7,6 @@ import numpy as np
 from torch_sparse import spmm
 from texttable import Texttable
 
-
 class APPNPTrainer(object):
 
 
