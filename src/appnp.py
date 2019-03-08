@@ -110,6 +110,8 @@ class APPNPTrainer(object):
         print(tab.draw())
 
     def fit(self):
+        """
+        """
         self.train_neural_network()
         self.score()
         self.propagate()
