@@ -43,12 +43,15 @@ class APPNPTrainer(object):
 
 
     def create_batches(self):
+        """
+        """
         random.shuffle(self.train_nodes)
         self.batches = [self.train_nodes[i:i+self.args.batch_size] for i in range(0, len(self.train_nodes), self.args.batch_size)]
 
     def process_batch(self, batch):
+        """
+        """
         features = np.zeros((len(batch), self.number_of_features))
-        
         index_1 = [i for i, node in enumerate(batch) for feature_index in self.features[node]]
         index_2 = [feature_index for i, node in enumerate(batch) for feature_index in self.features[node]]
         value = [1.0 for i, node in enumerate(batch) for feature_index in self.features[node]]
