@@ -12,6 +12,8 @@ class APPNPTrainer(object):
     
     """
     def __init__(self, args, graph, features, target):
+        """
+        """
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.args = args
         self.graph = graph
