@@ -23,6 +23,8 @@ class APPNPTrainer(object):
         self.train_test_split()
 
     def create_model(self):
+        """
+        """
         self.node_count = self.graph.number_of_nodes()
         self.number_of_labels = np.max(self.target)+1
         self.number_of_features = max([feature for node, features  in self.features.items() for feature in features]) + 1
