@@ -91,7 +91,6 @@ class APPNPTrainer(object):
                 localized_predictions = (1-self.args.alpha)*spmm(indices, weights, localized_predictions.shape[0], localized_predictions)+self.args.alpha*self.predictions
             self.predictions = localized_predictions    
 
-
     def score(self):
         """
         """
