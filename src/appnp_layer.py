@@ -69,4 +69,3 @@ class APPNPModel(torch.nn.Module):
         latent_features_1 = torch.nn.functional.dropout(latent_features_1, p = dropout_rate, training = self.training)
         latent_features_2 = torch.nn.functional.softmax(self.layer_2(latent_features_1),dim=1)
         return latent_features_2
-
