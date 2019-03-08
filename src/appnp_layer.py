@@ -51,8 +51,15 @@ class FullyConnected(torch.nn.Module):
         return filtered_features
 
 class APPNPModel(torch.nn.Module):
-
+    """
+    Simplet FeedForward network.
+    """
     def __init__(self, args, number_of_labels, number_of_features):
+        """
+        Creating a model.
+        :param number_of_labels: Number of possible node labels.
+        :param number_of_features: Number of node features.
+        """
         super(APPNPModel, self).__init__()
         self.args = args
         self.number_of_labels = number_of_labels
@@ -60,12 +67,21 @@ class APPNPModel(torch.nn.Module):
         self.setup_layers()
 
     def setup_layers(self):
+        """
+        Defining layer structure.
+        """
         self.layer_1 = FullyConnected(self.number_of_features, self.args.layers[0])
         self.layer_2 = FullyConnected(self.args.layers[1], self.number_of_labels)
 
     def forward(self, features, dropout_rate):
+        """
+        Making a forward pass.
+        :param features: Node features.
+        :param dropout_rate: Probability of droping a feature.
+        :return latent_features_2: Scores for labels.
+        """
         features = torch.nn.functional.dropout(features, p = dropout_rate, training = self.training)
         latent_features_1 = torch.nn.functional.relu(self.layer_1(features))
         latent_features_1 = torch.nn.functional.dropout(latent_features_1, p = dropout_rate, training = self.training)
-        latent_features_2 = torch.nn.functional.softmax(self.layer_2(latent_features_1),dim=1)
+        latent_features_2 = torch.nn.functional.softmax(self.layer_2(latent_features_1), dim = 1)
         return latent_features_2
