@@ -62,6 +62,8 @@ class APPNPTrainer(object):
 
 
     def train_neural_network(self):
+        """
+        """
         print("\nTraining.\n")
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
         self.model.train()
