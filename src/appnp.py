@@ -2,11 +2,10 @@ import torch
 import random
 import numpy as np
 from tqdm import trange, tqdm
-from utils import create_propagator_matrix
-from appnp_layer import APPNPModel
-
 from torch_sparse import spmm
 from texttable import Texttable
+from appnp_layer import APPNPModel
+from utils import create_propagator_matrix
 
 class APPNPTrainer(object):
 
