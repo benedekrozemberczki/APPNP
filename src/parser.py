@@ -46,7 +46,7 @@ def parameter_parser():
     parser.add_argument("--early-stopping-rounds",
                         type = int,
                         default = 500,
-	                help = "Number of Approximate Personalized PageRank iterations. Default is 10.")
+	                help = "Number of training rounds before early stopping. Default is 10.")
 
     parser.add_argument("--train-size",
                         type = int,
