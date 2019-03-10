@@ -94,7 +94,9 @@ class SparseFullyConnected(torch.nn.Module):
 
 
 class APPNPModel(torch.nn.Module):
-
+    """
+    APPNP Model Class.
+    """
     def __init__(self, args, number_of_labels, number_of_features, graph, device):
         super(APPNPModel, self).__init__()
         self.args = args
