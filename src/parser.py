@@ -5,7 +5,6 @@ def parameter_parser():
     A method to parse up command line parameters. By default it trains on the Cora dataset.
     The default hyperparameters give a good quality representation without grid search.
     """
-
     parser = argparse.ArgumentParser(description = "Run PPNP/APPNP.")
 
     parser.add_argument("--edge-path",
