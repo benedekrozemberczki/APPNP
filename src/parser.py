@@ -30,7 +30,7 @@ def parameter_parser():
 
     parser.add_argument("--epochs",
                         type = int,
-                        default = 1000,
+                        default = 2000,
 	                help = "Number of training epochs. Default is 1000.")
 
     parser.add_argument("--seed",
@@ -43,15 +43,20 @@ def parameter_parser():
                         default = 10,
 	                help = "Number of Approximate Personalized PageRank iterations. Default is 10.")
 
-    parser.add_argument("--training-size",
+    parser.add_argument("--early-stopping-rounds",
+                        type = int,
+                        default = 500,
+	                help = "Number of Approximate Personalized PageRank iterations. Default is 10.")
+
+    parser.add_argument("--train-size",
                         type = int,
                         default = 1500,
 	                help = "Training set size. Default is 1500.")
 
-    parser.add_argument("--batch-size",
+    parser.add_argument("--test-size",
                         type = int,
-                        default = 128,
-	                help = "Batch size. Default is 128.")
+                        default = 500,
+	                help = "Training set size. Default is 1500.")
 
     parser.add_argument("--dropout",
                         type = float,
@@ -65,12 +70,12 @@ def parameter_parser():
 
     parser.add_argument("--learning-rate",
                         type = float,
-                        default = 0.001,
+                        default = 0.01,
 	                help = "Learning rate. Default is 0.01.")
 
     parser.add_argument("--lambd",
                         type = float,
-                        default = 0.001,
+                        default = 0.005,
 	                help = "Weight matrix regularization. Default is 0.005.")
 
     parser.add_argument("--layers",

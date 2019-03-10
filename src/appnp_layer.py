@@ -1,7 +1,7 @@
 import math
 import torch
 from torch_sparse import spmm
-
+from utils import create_propagator_matrix
 def uniform(size, tensor):
     """
     Uniform weight initialization.
@@ -12,7 +12,7 @@ def uniform(size, tensor):
     if tensor is not None:
         tensor.data.uniform_(-stdv, stdv)
 
-class FullyConnected(torch.nn.Module):
+class DenseFullyConnected(torch.nn.Module):
     """
     Abstract class for PageRank and Approximate PageRank networks.
     :param in_channels: Number of input channels.
@@ -20,7 +20,7 @@ class FullyConnected(torch.nn.Module):
     :param density: Feature matrix structure.
     """
     def __init__(self, in_channels, out_channels):
-        super(FullyConnected, self).__init__()
+        super(DenseFullyConnected, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.define_parameters()
@@ -44,44 +44,92 @@ class FullyConnected(torch.nn.Module):
         """
         Doing a forward pass.
         :param features: Feature matrix.
+        :param dropout_rate: Dropout value.
         :return filtered_features: Convolved features.
         """
         filtered_features = torch.mm(features, self.weight_matrix)
         filtered_features = filtered_features + self.bias
         return filtered_features
 
+
+class SparseFullyConnected(torch.nn.Module):
+    """
+    Abstract class for PageRank and Approximate PageRank networks.
+    :param in_channels: Number of input channels.
+    :param out_channels: Number of output channels.
+    :param density: Feature matrix structure.
+    """
+    def __init__(self, in_channels, out_channels):
+        super(SparseFullyConnected, self).__init__()
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.define_parameters()
+        self.init_parameters()
+
+    def define_parameters(self):
+        """
+        Defining the weight matrices.
+        """
+        self.weight_matrix = torch.nn.Parameter(torch.Tensor(self.in_channels, self.out_channels))
+        self.bias = torch.nn.Parameter(torch.Tensor(self.out_channels))
+
+    def init_parameters(self):
+        """
+        Initializing weights.
+        """
+        torch.nn.init.xavier_uniform_(self.weight_matrix)
+        uniform(self.out_channels, self.bias)
+
+    def forward(self, feature_indices, feature_values):
+        number_of_nodes = torch.max(feature_indices[0]).item()+1
+        filtered_features = spmm(feature_indices, feature_values, number_of_nodes, self.weight_matrix)
+        filtered_features = filtered_features + self.bias
+        return filtered_features        
+
+
 class APPNPModel(torch.nn.Module):
-    """
-    Simplet FeedForward network.
-    """
-    def __init__(self, args, number_of_labels, number_of_features):
-        """
-        Creating a model.
-        :param number_of_labels: Number of possible node labels.
-        :param number_of_features: Number of node features.
-        """
+
+    def __init__(self, args, number_of_labels, number_of_features, graph, device):
         super(APPNPModel, self).__init__()
         self.args = args
         self.number_of_labels = number_of_labels
         self.number_of_features = number_of_features
+        self.graph = graph
+        self.device = device
         self.setup_layers()
+        self.setup_propagator()
 
     def setup_layers(self):
-        """
-        Defining layer structure.
-        """
-        self.layer_1 = FullyConnected(self.number_of_features, self.args.layers[0])
-        self.layer_2 = FullyConnected(self.args.layers[1], self.number_of_labels)
 
-    def forward(self, features, dropout_rate):
-        """
-        Making a forward pass.
-        :param features: Node features.
-        :param dropout_rate: Probability of droping a feature.
-        :return latent_features_2: Scores for labels.
-        """
-        features = torch.nn.functional.dropout(features, p = dropout_rate, training = self.training)
-        latent_features_1 = torch.nn.functional.relu(self.layer_1(features))
-        latent_features_1 = torch.nn.functional.dropout(latent_features_1, p = dropout_rate, training = self.training)
-        latent_features_2 = torch.nn.functional.softmax(self.layer_2(latent_features_1), dim = 1)
-        return latent_features_2
+        self.layer_1 = SparseFullyConnected(self.number_of_features, self.args.layers[0])
+        self.layer_2 = DenseFullyConnected(self.args.layers[1], self.number_of_labels)
+
+    def setup_propagator(self):
+        self.propagator = create_propagator_matrix(self.graph, self.args.alpha, self.args.model)
+
+        if self.args.model=="exact":
+            self.propagator = self.propagator.to(self.device)
+        else:
+            self.edge_indices = self.propagator["indices"].to(self.device)
+            self.edge_weights = self.propagator["values"].to(self.device)
+
+    def forward(self, feature_indices, feature_values):
+
+        feature_values = torch.nn.functional.dropout(feature_values, p = self.args.dropout, training = self.training)
+        latent_features_1 = torch.nn.functional.relu(self.layer_1(feature_indices, feature_values))
+        latent_features_1 = torch.nn.functional.dropout(latent_features_1, p = self.args.dropout, training = self.training)
+        latent_features_2 = self.layer_2(latent_features_1)
+
+        if self.args.model=="exact":
+            
+            self.predictions = torch.mm(torch.nn.functional.dropout(self.propagator, p = self.args.dropout, training = self.training), latent_features_2)
+        else:
+            localized_predictions = latent_features_2
+            edge_weights = torch.nn.functional.dropout(self.edge_weights, p = self.args.dropout, training = self.training)
+            for iteration in range(self.args.iterations):
+                
+                localized_predictions = (1-self.args.alpha)*spmm(self.edge_indices, edge_weights, localized_predictions.shape[0], localized_predictions)+self.args.alpha*latent_features_2
+            self.predictions = localized_predictions  
+        self.predictions = torch.nn.functional.log_softmax(self.predictions , dim=1)
+        return self.predictions
+
