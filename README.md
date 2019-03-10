@@ -70,11 +70,11 @@ Training an APPNP/PPNP model is handled by the `src/main.py` script which provid
   --seed              INT     Random seed.                   Defailt is 42.
   --model             STR     Model exact or approximate.    Default is `exact`.
   --iterations        INT     APP iterations.                Default is 10.
-  --alpha             FLOAT   Teleport parameter.            Default is 0.7
-  --epochs            INT     Number of training epochs.     Default is 200.
+  --alpha             FLOAT   Teleport parameter.            Default is 0.1
+  --epochs            INT     Number of training epochs.     Default is 2000.
   --early-stopping    INT     Early stopping rounds.         Default is 5.
   --training-size     INT     Training set size.             Default is 1500.
-  --validation-size   INT     Validation set size.           Default is 500.
+  --test-size         INT     Test set size.                 Default is 500.
   --learning-rate     FLOAT   Adam learning rate.            Default is 0.01
   --dropout           FLOAT   Dropout rate value.            Default is 0.5
   --lambd             FLOAT   Rgularization parameter.       Default is 0.005.
