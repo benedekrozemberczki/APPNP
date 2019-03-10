@@ -37,7 +37,6 @@ def feature_reader(path):
     features = {int(k):[int(val) for val in v] for k, v in features.items()}
     return features
 
-
 def target_reader(path):
     """
     Reading the target vector from disk.
