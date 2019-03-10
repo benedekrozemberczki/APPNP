@@ -44,7 +44,6 @@ class DenseFullyConnected(torch.nn.Module):
         """
         Doing a forward pass.
         :param features: Feature matrix.
-        :param dropout_rate: Dropout value.
         :return filtered_features: Convolved features.
         """
         filtered_features = torch.mm(features, self.weight_matrix)
