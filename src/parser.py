@@ -56,7 +56,7 @@ def parameter_parser():
     parser.add_argument("--test-size",
                         type = int,
                         default = 500,
-	                help = "Training set size. Default is 1500.")
+	                help = "Test set size. Default is 500.")
 
     parser.add_argument("--dropout",
                         type = float,
