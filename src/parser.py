@@ -31,7 +31,7 @@ def parameter_parser():
     parser.add_argument("--epochs",
                         type = int,
                         default = 2000,
-	                help = "Number of training epochs. Default is 1000.")
+	                help = "Number of training epochs. Default is 2000.")
 
     parser.add_argument("--seed",
                         type = int,
