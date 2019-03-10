@@ -2,6 +2,7 @@ import math
 import torch
 from torch_sparse import spmm
 from utils import create_propagator_matrix
+
 def uniform(size, tensor):
     """
     Uniform weight initialization.
