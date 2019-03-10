@@ -81,6 +81,12 @@ class SparseFullyConnected(torch.nn.Module):
         uniform(self.out_channels, self.bias)
 
     def forward(self, feature_indices, feature_values):
+        """
+        Making a forward pass.
+        :param feature_indices: Non zero value indices.
+        :param feature_values: Matrix values.
+        :return filtered_features: Output features.
+        """
         number_of_nodes = torch.max(feature_indices[0]).item()+1
         filtered_features = spmm(feature_indices, feature_values, number_of_nodes, self.weight_matrix)
         filtered_features = filtered_features + self.bias
