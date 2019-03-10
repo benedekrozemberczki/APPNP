@@ -138,4 +138,3 @@ class APPNPModel(torch.nn.Module):
             self.predictions = localized_predictions  
         self.predictions = torch.nn.functional.log_softmax(self.predictions , dim=1)
         return self.predictions
-
