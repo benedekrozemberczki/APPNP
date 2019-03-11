@@ -1,11 +1,10 @@
 import torch
 import random
-from tqdm import trange, tqdm
-from appnp_layer import APPNPModel
 import numpy as np
+from tqdm import trange, tqdm
 from torch_sparse import spmm
 from texttable import Texttable
-
+from appnp_layer import APPNPModel
 
 class APPNPTrainer(object):
 
