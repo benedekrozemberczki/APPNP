@@ -65,7 +65,7 @@ def parameter_parser():
     parser.add_argument("--alpha",
                         type = float,
                         default = 0.1,
-	                help = "Page rank teleport parameter. Default is 0.7.")
+	                help = "Page rank teleport parameter. Default is 0.1.")
 
     parser.add_argument("--learning-rate",
                         type = float,
