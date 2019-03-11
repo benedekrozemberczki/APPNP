@@ -68,7 +68,6 @@ class APPNPTrainer(object):
         self.feature_values = torch.FloatTensor(values)
         self.target = torch.LongTensor(self.target)
 
-
     def transfer_features(self):
         self.target = self.target.to(self.device)
         self.feature_indices = self.feature_indices.to(self.device)
