@@ -50,6 +50,9 @@ class APPNPTrainer(object):
         self.validation_nodes = nodes[self.args.train_size+self.args.test_size:]
 
     def transfer_node_sets(self):
+        """
+        Transfering the node sets to the device.
+        """
         self.train_nodes = torch.LongTensor(self.train_nodes).to(self.device)
         self.test_nodes = torch.LongTensor(self.test_nodes).to(self.device)
         self.validation_nodes = torch.LongTensor(self.validation_nodes).to(self.device)
