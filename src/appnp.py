@@ -78,6 +78,11 @@ class APPNPTrainer(object):
 
 
     def score(self, index_set):
+        """
+        Calculating the accuracy for a given node set.
+        :param index_set: Index of nodes to be included in calculation.
+        :parm acc: Accuracy score.
+        """
         self.model.eval()
         _, pred = self.model(self.feature_indices, self.feature_values).max(dim=1)
         correct = pred[index_set].eq(self.target[index_set]).sum().item()
