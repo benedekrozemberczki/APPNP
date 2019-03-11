@@ -96,6 +96,11 @@ class SparseFullyConnected(torch.nn.Module):
 class APPNPModel(torch.nn.Module):
     """
     APPNP Model Class.
+    :param args: Arguments object.
+    :param number_of_labels: Number of target labels.
+    :param number_of_features: Number of input features.
+    :param graph: NetworkX graph.
+    :param device: CPU or GPU.
     """
     def __init__(self, args, number_of_labels, number_of_features, graph, device):
         super(APPNPModel, self).__init__()
