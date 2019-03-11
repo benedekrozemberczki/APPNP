@@ -51,7 +51,6 @@ class DenseFullyConnected(torch.nn.Module):
         filtered_features = filtered_features + self.bias
         return filtered_features
 
-
 class SparseFullyConnected(torch.nn.Module):
     """
     Abstract class for PageRank and Approximate PageRank networks.
