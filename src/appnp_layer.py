@@ -120,10 +120,9 @@ class APPNPModel(torch.nn.Module):
 
     def setup_propagator(self):
         """
-        Defining propagation matrix.
+        Defining propagation matrix (Personalized Pagrerank or adjacency).
         """
         self.propagator = create_propagator_matrix(self.graph, self.args.alpha, self.args.model)
-
         if self.args.model=="exact":
             self.propagator = self.propagator.to(self.device)
         else:
