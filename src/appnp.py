@@ -58,7 +58,9 @@ class APPNPTrainer(object):
         self.validation_nodes = torch.LongTensor(self.validation_nodes).to(self.device)
 
     def process_features(self):
-
+        """
+        Creating a sparse feature matrix and a vector for the target labels.
+        """
         index_1 = [node for node in self.graph.nodes() for fet in self.features[node]]
         index_2 = [fet for node in self.graph.nodes() for fet in self.features[node]]
         values = [1.0/len(self.features[node]) for node in self.graph.nodes() for fet in self.features[node]]
