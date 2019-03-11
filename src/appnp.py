@@ -69,6 +69,9 @@ class APPNPTrainer(object):
         self.target = torch.LongTensor(self.target)
 
     def transfer_features(self):
+        """
+        Transfering the features and the target matrix to the device.
+        """
         self.target = self.target.to(self.device)
         self.feature_indices = self.feature_indices.to(self.device)
         self.feature_values = self.feature_values.to(self.device)
