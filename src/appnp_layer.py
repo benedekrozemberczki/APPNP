@@ -113,7 +113,9 @@ class APPNPModel(torch.nn.Module):
         self.setup_propagator()
 
     def setup_layers(self):
-
+        """
+        Creating layers.
+        """
         self.layer_1 = SparseFullyConnected(self.number_of_features, self.args.layers[0])
         self.layer_2 = DenseFullyConnected(self.args.layers[1], self.number_of_labels)
 
