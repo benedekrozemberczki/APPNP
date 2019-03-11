@@ -90,6 +90,9 @@ class APPNPTrainer(object):
         return acc
 
     def do_a_step(self):
+        """
+        Doing an optimization step.
+        """
         self.model.train()
         self.optimizer.zero_grad()
         prediction = self.model(self.feature_indices, self.feature_values)
@@ -99,6 +102,9 @@ class APPNPTrainer(object):
         self.optimizer.step()
 
     def train_neural_network(self):
+        """
+        Training a neural network.
+        """
         print("\nTraining.\n")
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
         self.best_accuracy = 0
@@ -119,7 +125,9 @@ class APPNPTrainer(object):
                     break               
 
     def fit(self):
+        """
+        Fitting the network and calculating the test accuracy.
+        """
         self.train_neural_network()
         print("\nBreaking from training process because of early stopping.\n")
         print("Test accuracy: {:.4f}".format(self.test_accuracy))
-        
