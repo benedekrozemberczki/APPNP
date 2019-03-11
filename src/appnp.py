@@ -76,7 +76,6 @@ class APPNPTrainer(object):
         self.feature_indices = self.feature_indices.to(self.device)
         self.feature_values = self.feature_values.to(self.device)
 
-
     def score(self, index_set):
         """
         Calculating the accuracy for a given node set.
