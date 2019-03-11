@@ -120,6 +120,9 @@ class APPNPModel(torch.nn.Module):
         self.layer_2 = DenseFullyConnected(self.args.layers[1], self.number_of_labels)
 
     def setup_propagator(self):
+        """
+        Defining propagation matrix.
+        """
         self.propagator = create_propagator_matrix(self.graph, self.args.alpha, self.args.model)
 
         if self.args.model=="exact":
