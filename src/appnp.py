@@ -7,9 +7,16 @@ from texttable import Texttable
 from appnp_layer import APPNPModel
 
 class APPNPTrainer(object):
-
-
+    """
+    Method to train PPNP/APPNP model.
+    """
     def __init__(self, args, graph, features, target):
+        """
+        :param args: Arguments object.
+        :param graph: Networkx graph.
+        :param features: Feature matrix.
+        :param target: Target vector with labels.
+        """
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.args = args
         self.graph = graph
@@ -22,6 +29,9 @@ class APPNPTrainer(object):
         self.transfer_features()
 
     def create_model(self):
+        """
+        Defining a model and transfering it to GPU/CPU.
+        """
         self.node_count = self.graph.number_of_nodes()
         self.number_of_labels = np.max(self.target)+1
         self.number_of_features = max([feature for node, features  in self.features.items() for feature in features]) + 1
