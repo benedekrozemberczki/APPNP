@@ -1,4 +1,4 @@
-APPNP <img src="https://img.shields.io/badge/stars-60+-blue.svg"/> <img src="https://img.shields.io/badge/license-MIT-blue.svg"/>
+APPNP <img src="https://img.shields.io/badge/stars-60+-blue.svg"/>  <img src="https://img.shields.io/badge/forks-5+-blue.svg"/><img src="https://img.shields.io/badge/license-MIT-blue.svg"/>
 ============================================
 
 An implementation of "Predict then Propagate: Graph Neural
