@@ -140,7 +140,6 @@ class APPNPModel(torch.nn.Module):
         latent_features_1 = torch.nn.functional.relu(self.layer_1(feature_indices, feature_values))
         latent_features_1 = torch.nn.functional.dropout(latent_features_1, p = self.args.dropout, training = self.training)
         latent_features_2 = self.layer_2(latent_features_1)
-
         if self.args.model=="exact":       
             self.predictions = torch.mm(torch.nn.functional.dropout(self.propagator, p = self.args.dropout, training = self.training), latent_features_2)
         else:
@@ -148,7 +147,6 @@ class APPNPModel(torch.nn.Module):
             edge_weights = torch.nn.functional.dropout(self.edge_weights, p = self.args.dropout, training = self.training)
             for iteration in range(self.args.iterations):       
                 localized_predictions = (1-self.args.alpha)*spmm(self.edge_indices, edge_weights, localized_predictions.shape[0], localized_predictions)+self.args.alpha*latent_features_2
-            self.predictions = localized_predictions  
-            
+            self.predictions = localized_predictions
         self.predictions = torch.nn.functional.log_softmax(self.predictions , dim=1)
         return self.predictions
