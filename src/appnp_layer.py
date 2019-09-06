@@ -91,7 +91,6 @@ class SparseFullyConnected(torch.nn.Module):
         filtered_features = filtered_features + self.bias
         return filtered_features        
 
-
 class APPNPModel(torch.nn.Module):
     """
     APPNP Model Class.
