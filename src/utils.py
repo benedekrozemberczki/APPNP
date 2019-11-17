@@ -1,3 +1,5 @@
+"""Utilities for data manipulation."""
+
 import json
 import torch
 import numpy as np
@@ -13,8 +15,8 @@ def tab_printer(args):
     """
     args = vars(args)
     keys = sorted(args.keys())
-    t = Texttable() 
-    t.add_rows([["Parameter", "Value"]] +  [[k.replace("_"," ").capitalize(),args[k]] for k in keys])
+    t = Texttable()
+    t.add_rows([["Parameter", "Value"]] + [[k.replace("_", " ").capitalize(), args[k]] for k in keys])
     print(t.draw())
 
 def graph_reader(path):
@@ -34,7 +36,7 @@ def feature_reader(path):
     :return out_features: Dict with index and value tensor.
     """
     features = json.load(open(path))
-    features = {int(k):[int(val) for val in v] for k, v in features.items()}
+    features = {int(k): [int(val) for val in v] for k, v in features.items()}
     return features
 
 def target_reader(path):
@@ -55,8 +57,8 @@ def create_adjacency_matrix(graph):
     index_1 = [edge[0] for edge in graph.edges()] + [edge[1] for edge in graph.edges()]
     index_2 = [edge[1] for edge in graph.edges()] + [edge[0] for edge in graph.edges()]
     values = [1 for edge in index_1]
-    node_count = max(max(index_1)+1,max(index_2)+1)
-    A = sparse.coo_matrix((values, (index_1,index_2)),shape=(node_count,node_count),dtype=np.float32)
+    node_count = max(max(index_1)+1, max(index_2)+1)
+    A = sparse.coo_matrix((values, (index_1, index_2)), shape=(node_count, node_count), dtype=np.float32)
     return A
 
 def normalize_adjacency_matrix(A, I):
@@ -79,7 +81,8 @@ def create_propagator_matrix(graph, alpha, model):
     :param graph: NetworkX graph.
     :param alpha: Teleport parameter.
     :param model: Type of model exact or approximate.
-    :return propagator: Propagator matrix - Dense torch matrix or dict with indices and values for sparse multiplication.
+    :return propagator: Propagator matrix Dense torch matrix /
+    dict with indices and values for sparse multiplication.
     """
     A = create_adjacency_matrix(graph)
     I = sparse.eye(A.shape[0])
@@ -90,6 +93,7 @@ def create_propagator_matrix(graph, alpha, model):
     else:
         propagator = dict()
         A_tilde_hat = sparse.coo_matrix(A_tilde_hat)
-        propagator["indices"] = torch.LongTensor(np.concatenate([A_tilde_hat.row.reshape(-1,1), A_tilde_hat.col.reshape(-1,1)],axis=1).T)
+        indices = np.concatenate([A_tilde_hat.row.reshape(-1, 1), A_tilde_hat.col.reshape(-1, 1)], axis=1).T
+        propagator["indices"] = torch.LongTensor(indices)
         propagator["values"] = torch.FloatTensor(A_tilde_hat.data)
     return propagator

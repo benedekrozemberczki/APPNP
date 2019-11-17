@@ -1,6 +1,8 @@
+""" Running the APPNP model."""
+
 import torch
 from appnp import APPNPTrainer
-from parser import parameter_parser
+from param_parser import parameter_parser
 from utils import tab_printer, graph_reader, feature_reader, target_reader
 
 def main():

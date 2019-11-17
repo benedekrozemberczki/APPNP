@@ -1,3 +1,5 @@
+"""APPNP and PPNP layers."""
+
 import math
 import torch
 from torch_sparse import spmm
@@ -87,9 +89,14 @@ class SparseFullyConnected(torch.nn.Module):
         :return filtered_features: Output features.
         """
         number_of_nodes = torch.max(feature_indices[0]).item()+1
-        filtered_features = spmm(feature_indices, feature_values, number_of_nodes, self.weight_matrix)
+        number_of_features = torch.max(feature_indices[1]).item()+1
+        filtered_features = spmm(index = feature_indices,
+                                 value = feature_values,
+                                 m = number_of_nodes,
+                                 n = number_of_features,
+                                 matrix = self.weight_matrix)
         filtered_features = filtered_features + self.bias
-        return filtered_features        
+        return filtered_features
 
 class APPNPModel(torch.nn.Module):
     """
@@ -122,7 +129,7 @@ class APPNPModel(torch.nn.Module):
         Defining propagation matrix (Personalized Pagrerank or adjacency).
         """
         self.propagator = create_propagator_matrix(self.graph, self.args.alpha, self.args.model)
-        if self.args.model=="exact":
+        if self.args.model == "exact":
             self.propagator = self.propagator.to(self.device)
         else:
             self.edge_indices = self.propagator["indices"].to(self.device)
@@ -135,17 +142,41 @@ class APPNPModel(torch.nn.Module):
         :param feature_values: Values in the feature matrix.
         :return self.predictions: Predicted class label log softmaxes.
         """
-        feature_values = torch.nn.functional.dropout(feature_values, p = self.args.dropout, training = self.training)
-        latent_features_1 = torch.nn.functional.relu(self.layer_1(feature_indices, feature_values))
-        latent_features_1 = torch.nn.functional.dropout(latent_features_1, p = self.args.dropout, training = self.training)
+        feature_values = torch.nn.functional.dropout(feature_values,
+                                                     p=self.args.dropout,
+                                                     training=self.training)
+
+        latent_features_1 = self.layer_1(feature_indices, feature_values)
+
+        latent_features_1 = torch.nn.functional.relu(latent_features_1)
+
+        latent_features_1 = torch.nn.functional.dropout(latent_features_1,
+                                                        p=self.args.dropout,
+                                                        training=self.training)
+
         latent_features_2 = self.layer_2(latent_features_1)
-        if self.args.model=="exact":       
-            self.predictions = torch.mm(torch.nn.functional.dropout(self.propagator, p = self.args.dropout, training = self.training), latent_features_2)
+        if self.args.model == "exact":
+            self.predictions = torch.nn.functional.dropout(self.propagator,
+                                                           p=self.args.dropout,
+                                                           training=self.training)
+
+            self.predictions = torch.mm(self.predictions, latent_features_2)
         else:
             localized_predictions = latent_features_2
-            edge_weights = torch.nn.functional.dropout(self.edge_weights, p = self.args.dropout, training = self.training)
-            for iteration in range(self.args.iterations):       
-                localized_predictions = (1-self.args.alpha)*spmm(self.edge_indices, edge_weights, localized_predictions.shape[0], localized_predictions)+self.args.alpha*latent_features_2
+            edge_weights = torch.nn.functional.dropout(self.edge_weights,
+                                                       p=self.args.dropout,
+                                                       training=self.training)
+
+            for iteration in range(self.args.iterations):
+
+                new_features = spmm(index=self.edge_indices,
+                                    value=edge_weights,
+                                    n=localized_predictions.shape[0],
+                                    m=localized_predictions.shape[0],
+                                    matrix=localized_predictions)
+
+                localized_predictions = (1-self.args.alpha)*new_features
+                localized_predictions = localized_predictions + self.args.alpha*latent_features_2
             self.predictions = localized_predictions
-        self.predictions = torch.nn.functional.log_softmax(self.predictions , dim=1)
+        self.predictions = torch.nn.functional.log_softmax(self.predictions, dim=1)
         return self.predictions

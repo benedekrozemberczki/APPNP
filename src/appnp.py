@@ -1,9 +1,9 @@
-import torch
+"""Training an APPNP model."""
+
 import random
+import torch
 import numpy as np
-from tqdm import trange, tqdm
-from torch_sparse import spmm
-from texttable import Texttable
+from tqdm import trange
 from appnp_layer import APPNPModel
 
 class APPNPTrainer(object):
@@ -34,8 +34,14 @@ class APPNPTrainer(object):
         """
         self.node_count = self.graph.number_of_nodes()
         self.number_of_labels = np.max(self.target)+1
-        self.number_of_features = max([feature for node, features  in self.features.items() for feature in features]) + 1
-        self.model = APPNPModel(self.args, self.number_of_labels, self.number_of_features, self.graph, self.device)
+        self.number_of_features = max([f for _, feats  in self.features.items() for f in feats])+1
+
+        self.model = APPNPModel(self.args,
+                                self.number_of_labels,
+                                self.number_of_features,
+                                self.graph,
+                                self.device)
+
         self.model = self.model.to(self.device)
 
     def train_test_split(self):
@@ -95,8 +101,9 @@ class APPNPTrainer(object):
         self.model.train()
         self.optimizer.zero_grad()
         prediction = self.model(self.feature_indices, self.feature_values)
-        loss = torch.nn.functional.nll_loss(prediction[self.train_nodes], self.target[self.train_nodes])
-        loss = loss + (self.args.lambd/2)*(torch.sum(self.model.layer_2.weight_matrix**2))
+        loss = torch.nn.functional.nll_loss(prediction[self.train_nodes],
+                                            self.target[self.train_nodes])
+        loss = loss+(self.args.lambd/2)*(torch.sum(self.model.layer_2.weight_matrix**2))
         loss.backward()
         self.optimizer.step()
 
@@ -109,7 +116,7 @@ class APPNPTrainer(object):
         self.best_accuracy = 0
         self.step_counter = 0
         iterator = trange(self.args.epochs, desc='Validation accuracy: ', leave=True)
-        for epoch in iterator:
+        for _ in iterator:
             self.do_a_step()
             accuracy = self.score(self.validation_nodes)
             iterator.set_description("Validation accuracy: {:.4f}".format(accuracy))
@@ -119,9 +126,9 @@ class APPNPTrainer(object):
                 self.step_counter = 0
             else:
                 self.step_counter = self.step_counter + 1
-                if self.step_counter>self.args.early_stopping_rounds:
+                if self.step_counter > self.args.early_stopping_rounds:
                     iterator.close()
-                    break               
+                    break
 
     def fit(self):
         """
