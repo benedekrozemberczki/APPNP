@@ -26,7 +26,7 @@ def graph_reader(path):
     :return graph: NetworkX object returned.
     """
     graph = nx.from_edgelist(pd.read_csv(path).values.tolist())
-    graph.remove_edges_from(graph.selfloop_edges())
+    graph.remove_edges_from(nx.selfloop_edges(graph))
     return graph
 
 def feature_reader(path):
