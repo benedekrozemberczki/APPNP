@@ -1,8 +1,8 @@
 APPNP
 ============================================
 
- [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/predict-then-propagate-graph-neural-networks/node-classification-on-ms-academic)](https://paperswithcode.com/sota/node-classification-on-ms-academic?p=predict-then-propagate-graph-neural-networks) ![License](https://img.shields.io/github/license/benedekrozemberczki/APPNP.svg?color=blue&style=plastic) [![Arxiv](https://img.shields.io/badge/ArXiv-1810.05997-orange.svg?color=blue&style=plastic)](https://arxiv.org/abs/1810.05997) [![codebeat badge](https://codebeat.co/badges/b85b29b2-307e-418e-b704-79804e210111)](https://codebeat.co/projects/github-com-benedekrozemberczki-appnp-master)
-
+ [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/predict-then-propagate-graph-neural-networks/node-classification-on-ms-academic)](https://paperswithcode.com/sota/node-classification-on-ms-academic?p=predict-then-propagate-graph-neural-networks) ![License](https://img.shields.io/github/license/benedekrozemberczki/APPNP.svg?color=blue&style=plastic) [![Arxiv](https://img.shields.io/badge/ArXiv-1810.05997-orange.svg?color=blue&style=plastic)](https://arxiv.org/abs/1810.05997) [![codebeat badge](https://codebeat.co/badges/b85b29b2-307e-418e-b704-79804e210111)](https://codebeat.co/projects/github-com-benedekrozemberczki-appnp-master) [![repo size](https://img.shields.io/github/repo-size/benedekrozemberczki/APPNP.svg)](https://github.com/benedekrozemberczki/APPNP/archive/master.zip)
+ 
 An implementation of **Predict then Propagate: Graph Neural
 Networks meet Personalized PageRank (ICLR 2019).**
 <p align="center">
