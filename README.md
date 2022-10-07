@@ -120,4 +120,4 @@ python src/main.py --learning-rate 0.1 --dropout 0.9
 
 - [GNU License](https://github.com/benedekrozemberczki/APPNP/blob/master/LICENSE)
 
---------------------------------------------------------------------------------
+----------------------------------------------------------------------------
